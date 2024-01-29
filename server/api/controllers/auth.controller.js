@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
-export const signUp = async (req, res) => {
+import { nextTick } from "process";
+export const signUp = async (req, res, next) => {
   const { username, email, password } = req.body;
   const encryptedPassword = bcryptjs.hashSync(password, 10);
   const newUser = new User({ username, email, password: encryptedPassword });
@@ -10,8 +11,6 @@ export const signUp = async (req, res) => {
       message: "User Created Successfully",
     });
   } catch (err) {
-    res.status(500).json({
-      message: "Duplicate record",
-    });
+    next(err);
   }
 };
